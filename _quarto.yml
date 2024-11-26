@@ -13,14 +13,15 @@ project:
       - 06_ident_marker.qmd
       - 07_differential_expression_analysis.qmd
       - 08_enrichment_analysis.qmd
-      - bioinformatics_update.qmd
+      - 09_202411_online_training_shared.qmd
+      # - bioinformatics_update.qmd
       - sessioninfo.qmd
       - log.qmd
 
 website:
   sidebar:
     style: "docked"
-    title: "Single Cell Analysis with R on BD Rhapsody"
+    title: "Single Cell Analysis with R - BD Rhapsody demo data"
     search: true
     page-navigation: true
     contents:
@@ -34,7 +35,8 @@ website:
       - 06_ident_marker.qmd
       - 07_differential_expression_analysis.qmd
       - 08_enrichment_analysis.qmd
-      - bioinformatics_update.qmd
+      - 09_202411_online_training_shared.qmd
+      # - bioinformatics_update.qmd
       - sessioninfo.qmd
       - log.qmd
 

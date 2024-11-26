@@ -4,42 +4,42 @@
     "href": "log.html",
     "title": "Log",
     "section": "",
-    "text": "Seurat V4 Optional: The materials are updated to Seurat V5. If you want to use Seurat V4, you can follow the below instruction to install Seurat V4. Please note that you may need to adapt the code to fit Seurat V4 structure.\nFirst check the version of installed SeuratObject and Seurat.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")\n\nIf the version is 5.0.x, please follow the below instructions to remove the existing Seurat package and install Seurat V4.\n\nremove.packages(\"SeuratObject\")\nremove.packages(\"Seurat\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.1.4.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\n# Validate the installation is successful by running packageVersion.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")"
+    "text": "Installing Azimuth with the latest version\n\nremotes::install_github('satijalab/azimuth', ref = 'master')"
   },
   {
     "objectID": "log.html#section",
     "href": "log.html#section",
     "title": "Log",
     "section": "",
-    "text": "Seurat V4 Optional: The materials are updated to Seurat V5. If you want to use Seurat V4, you can follow the below instruction to install Seurat V4. Please note that you may need to adapt the code to fit Seurat V4 structure.\nFirst check the version of installed SeuratObject and Seurat.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")\n\nIf the version is 5.0.x, please follow the below instructions to remove the existing Seurat package and install Seurat V4.\n\nremove.packages(\"SeuratObject\")\nremove.packages(\"Seurat\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.1.4.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\n# Validate the installation is successful by running packageVersion.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")"
+    "text": "Installing Azimuth with the latest version\n\nremotes::install_github('satijalab/azimuth', ref = 'master')"
   },
   {
     "objectID": "log.html#section-1",
     "href": "log.html#section-1",
     "title": "Log",
-    "section": "20240423",
-    "text": "20240423\nExtra plots\n\nseuratObj$test &lt;- ifelse(seuratObj$nFeature_RNA &lt; 300 | seuratObj$nCount_RNA &lt; 500, \"low\", \"high\")\n\n\nseuratObj@meta.data %&gt;%\n  ggplot(aes(x=nCount_RNA, y=nFeature_RNA, color=test)) +\n  geom_point() +\n  scale_colour_manual(values = c(\"black\", \"white\")) +\n  # stat_smooth(method=lm) +\n  scale_x_log10() +\n  scale_y_log10() +\n  theme_classic() +\n  geom_vline(xintercept = 500, colour = \"red\") +\n  geom_hline(yintercept = 300, colour = \"red\") +\n  facet_wrap(~Sample_Name) +\n  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))\n\nMove “multiplet” and “undetermined” removal to Chapter 02 Quality Control\nChapter 01 Update data import\n\n# update Seurat object\nseuratObj[[\"RNA\"]] &lt;- as(object = seuratObj[[\"RNA\"]], Class = \"Assay5\") \n\n# get bioproduct names for RNA and AbSeq\nab_name &lt;- grep(\"pAbO\", rownames(seuratObj), value = T, ignore.case = T)\nrna_name &lt;- rownames(seuratObj)[-which(rownames(seuratObj) %in% ab_name)]\n\n# get rna and AbSeq UMI counts, meta data\nab &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = ab_name)\nrna &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = rna_name)\n\n# recreate seurat object\nseuratObj[[\"RNA\"]] &lt;- CreateAssay5Object(counts = rna, min.cells = 0, min.features = 0)\nseuratObj[[\"ADT\"]] &lt;- CreateAssay5Object(counts = ab, min.cells = 0, min.features = 0)"
+    "section": "20240507",
+    "text": "20240507\nSeurat V4 Optional: The materials are updated to Seurat V5. If you want to use Seurat V4, you can follow the below instruction to install Seurat V4. Please note that you may need to adapt the code to fit Seurat V4 structure.\nFirst check the version of installed SeuratObject and Seurat.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")\n\nIf the version is 5.0.x, please follow the below instructions to remove the existing Seurat package and install Seurat V4.\n\nremove.packages(\"SeuratObject\")\nremove.packages(\"Seurat\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.1.4.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\n# Validate the installation is successful by running packageVersion.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")"
   },
   {
     "objectID": "log.html#section-2",
     "href": "log.html#section-2",
     "title": "Log",
-    "section": "20240216",
-    "text": "20240216\n\nUpdated to Seurat V5\nArchive precourse_preparation_theory.qmd for future development\nhttps://github.com/satijalab/seurat/issues/8202"
+    "section": "20240423",
+    "text": "20240423\nExtra plots\n\nseuratObj$test &lt;- ifelse(seuratObj$nFeature_RNA &lt; 300 | seuratObj$nCount_RNA &lt; 500, \"low\", \"high\")\n\n\nseuratObj@meta.data %&gt;%\n  ggplot(aes(x=nCount_RNA, y=nFeature_RNA, color=test)) +\n  geom_point() +\n  scale_colour_manual(values = c(\"black\", \"white\")) +\n  # stat_smooth(method=lm) +\n  scale_x_log10() +\n  scale_y_log10() +\n  theme_classic() +\n  geom_vline(xintercept = 500, colour = \"red\") +\n  geom_hline(yintercept = 300, colour = \"red\") +\n  facet_wrap(~Sample_Name) +\n  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))\n\nMove “multiplet” and “undetermined” removal to Chapter 02 Quality Control\nChapter 01 Update data import\n\n# update Seurat object\nseuratObj[[\"RNA\"]] &lt;- as(object = seuratObj[[\"RNA\"]], Class = \"Assay5\") \n\n# get bioproduct names for RNA and AbSeq\nab_name &lt;- grep(\"pAbO\", rownames(seuratObj), value = T, ignore.case = T)\nrna_name &lt;- rownames(seuratObj)[-which(rownames(seuratObj) %in% ab_name)]\n\n# get rna and AbSeq UMI counts, meta data\nab &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = ab_name)\nrna &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = rna_name)\n\n# recreate seurat object\nseuratObj[[\"RNA\"]] &lt;- CreateAssay5Object(counts = rna, min.cells = 0, min.features = 0)\nseuratObj[[\"ADT\"]] &lt;- CreateAssay5Object(counts = ab, min.cells = 0, min.features = 0)"
   },
   {
     "objectID": "log.html#section-3",
     "href": "log.html#section-3",
     "title": "Log",
-    "section": "20231129",
-    "text": "20231129\nThe following chapters have the below changes:\nChapter 7 Differential Expression Analysis\n\nRemove log2FC correlation plot."
+    "section": "20240216",
+    "text": "20240216\n\nUpdated to Seurat V5\nArchive precourse_preparation_theory.qmd for future development\nhttps://github.com/satijalab/seurat/issues/8202"
   },
   {
     "objectID": "log.html#section-4",
     "href": "log.html#section-4",
     "title": "Log",
-    "section": "20231128",
-    "text": "20231128\nThe following chapters have the below changes:"
+    "section": "20231129",
+    "text": "20231129\nThe following chapters have the below changes:\nChapter 7 Differential Expression Analysis\n\nRemove log2FC correlation plot."
   },
   {
     "objectID": "log.html#setup",
@@ -249,7 +249,7 @@
     "href": "00_about.html",
     "title": "Introduction",
     "section": "",
-    "text": "This repository contains the teaching materials of Single Cell Boot Camp - Analyzing scRNA-seq with R. The boot camp aims to provide an overview of scRNAseq analysis workflow. It begins with a fast-paced session on the analysis workflow and proceeds with hands-on practice using bioinformatics packages such as Seurat."
+    "text": "This repository contains the teaching materials of Single Cell Boot Camp - Analyzing scRNA-seq with R. The boot camp aims to provide an overview of the scRNAseq analysis workflow. It begins with a fast-paced session on the analysis workflow and proceeds with hands-on practice using bioinformatics framework, Seurat."
   },
   {
     "objectID": "00_about.html#prerequisites-to-attend-the-single-cell-boot-camp",
@@ -459,6 +459,76 @@
     "href": "sessioninfo.html",
     "title": "SessionInfo",
     "section": "",
-    "text": "Note\n\n\n\n\nsessionInfo()\n\nR version 4.3.0 (2023-04-21)\nPlatform: x86_64-apple-darwin20 (64-bit)\nRunning under: macOS 14.4.1\n\nMatrix products: default\nBLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib \nLAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0\n\nlocale:\n[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8\n\ntime zone: Europe/Amsterdam\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] htmlwidgets_1.6.4 compiler_4.3.0    fastmap_1.1.1     cli_3.6.2        \n [5] tools_4.3.0       htmltools_0.5.8.1 rstudioapi_0.16.0 yaml_2.3.8       \n [9] rmarkdown_2.26    knitr_1.45        jsonlite_1.8.8    xfun_0.42        \n[13] digest_0.6.35     rlang_1.1.3       evaluate_0.23"
+    "text": "Note\n\n\n\n\nsessionInfo()\n\nR version 4.3.0 (2023-04-21)\nPlatform: x86_64-apple-darwin20 (64-bit)\nRunning under: macOS 15.1.1\n\nMatrix products: default\nBLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib \nLAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0\n\nlocale:\n[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8\n\ntime zone: Europe/Amsterdam\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] htmlwidgets_1.6.4 compiler_4.3.0    fastmap_1.2.0     cli_3.6.3        \n [5] tools_4.3.0       htmltools_0.5.8.1 rstudioapi_0.16.0 yaml_2.3.9       \n [9] rmarkdown_2.27    knitr_1.48        jsonlite_1.8.8    xfun_0.45        \n[13] digest_0.6.36     rlang_1.1.4       evaluate_0.24.0"
+  },
+  {
+    "objectID": "log.html#section-5",
+    "href": "log.html#section-5",
+    "title": "Log",
+    "section": "20231128",
+    "text": "20231128\nThe following chapters have the below changes:"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html",
+    "href": "09_202411_online_training_shared.html",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(Seurat)\nlibrary(scales)\nlibrary(gridExtra)\nlibrary(scCustomize)\nlibrary(scales)\nlibrary(scCustomize)\nlibrary(ggraph)\nThis is the tutorial compatible with the Tips&Tricks training held on 27th Nov., 2024."
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#read-in-data",
+    "href": "09_202411_online_training_shared.html#read-in-data",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "1. Read in data",
+    "text": "1. Read in data\n\ndemo &lt;- readRDS(\"demo_202411.rds\")"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#normalization-with-clr",
+    "href": "09_202411_online_training_shared.html#normalization-with-clr",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "2. Normalization with CLR",
+    "text": "2. Normalization with CLR\n\nDefaultAssay(demo) &lt;- \"ADT\"\n\ndemo &lt;- NormalizeData(demo, normalization.method = \"CLR\", margin = 2)"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#qc---outlier",
+    "href": "09_202411_online_training_shared.html#qc---outlier",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "3. QC - Outlier",
+    "text": "3. QC - Outlier\n\n# function to define outlier\nis_outlier &lt;- function(adata, nmads) {\n  # Extract the metric values from the dataset\n  M &lt;- tibble(cell_label = colnames(adata), \n         log1p_adt = log1p(adata@meta.data$nCount_ADT))\n  \n  # Calculate the median and MAD\n  median_val = median(M$log1p_adt)\n  mad_val = mad(M$log1p_adt)\n  \n  # Determine outliers based on the number of MADs from the median\n  M &lt;- mutate(M, outlier = (M$log1p_adt &lt; median_val - nmads * mad_val) | (M$log1p_adt &gt; median_val + nmads * mad_val))\n  \n  outlier &lt;- dplyr::filter(M, outlier == TRUE) %&gt;% \n    .$cell_label\n  \n  return(outlier)\n}\n\n# check which cells are outliers in each sample\nsample1_outlier &lt;- is_outlier(adata = subset(demo, subset = orig.ident == \"09ABC\"), 5)\nsample2_outlier &lt;- is_outlier(adata = subset(demo, subset = orig.ident == \"IC-Day1\"), 5)\n\ndemo_outlier &lt;- c(sample1_outlier, sample1_outlier)\n\n\n# plot outlier on violin plot\nplot_outlier &lt;- FetchData(demo, vars = \"nCount_ADT\") %&gt;% \n  rownames_to_column(\"cell_label\") %&gt;% \n  dplyr::filter(., cell_label %in% demo_outlier) %&gt;% \n  mutate(ident = \"09ABC\")\n\nvln_plot &lt;- VlnPlot(demo, features = \"nCount_ADT\", pt.size = 0)  \n\nvln_plot +\n  scale_y_log10() +\n  geom_jitter(data = plot_outlier, \n              aes(x = ident, y = nCount_ADT), \n              color = \"red\", \n              size = 0.5, \n              width = 0.1, \n              fill = \"red\")\n\n\n\n\n\n# remove outlier\ndemo &lt;- subset(demo, cells = demo_outlier, invert = T)"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#qc---doublets",
+    "href": "09_202411_online_training_shared.html#qc---doublets",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "3. QC - Doublets",
+    "text": "3. QC - Doublets\n\n# list all protein markers\nrownames(demo)\n\n [1] \"CCR7-protein\"   \"CD11c-protein\"  \"CD127-protein\"  \"CD134-protein\" \n [5] \"CD137-protein\"  \"CD14-protein\"   \"CD161-protein\"  \"CD16-protein\"  \n [9] \"CD183-protein\"  \"CD196-protein\"  \"CD19-protein\"   \"CD25-protein\"  \n[13] \"CD272-protein\"  \"CD278-protein\"  \"CD279-protein\"  \"CD27-protein\"  \n[17] \"CD28-protein\"   \"CD3-protein\"    \"CD45RA-protein\" \"CD4-protein\"   \n[21] \"CD56-protein\"   \"CD62L-protein\"  \"CD8-protein\"    \"CXCR5-protein\" \n[25] \"CXCR6-protein\"  \"GITR-protein\"   \"HLA-protein\"    \"IgD-protein\"   \n[29] \"IgM-protein\"    \"Tim3-protein\"  \n\n\n\nFeatureScatter(demo, feature1 = \"CD3-protein\", feature2 = \"CD19-protein\", slot = \"counts\", cols = c(\"black\", \"black\")) +\n  scale_x_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  scale_y_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  ggtitle(\"log1p total counts\") +\n  theme(legend.position = \"none\",\n    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),\n        axis.text.y = element_text(size = 8)) +\n  coord_fixed(ratio = 1) +\n  geom_vline(xintercept = 300, linetype = \"dashed\", color = \"red\", size = 1) +\n  geom_hline(yintercept = 60, linetype = \"dashed\", color = \"red\", size = 1) \n\n\n\n\n\nFeatureScatter(demo, feature1 = \"CD3-protein\", feature2 = \"CD14-protein\", slot = \"counts\", cols = c(\"black\", \"black\")) +\n  scale_x_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  scale_y_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  ggtitle(\"log1p total counts\") +\n  theme(legend.position = \"none\",\n    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),\n        axis.text.y = element_text(size = 8)) +\n  coord_fixed(ratio = 1) +\n  geom_vline(xintercept = 300, linetype = \"dashed\", color = \"red\", size = 1) +\n  geom_hline(yintercept = 100, linetype = \"dashed\", color = \"red\", size = 1) \n\n\n\n\n\n# Remove doublets\ndemo_filtered &lt;- subset(demo, subset = `CD3-protein` &gt; 300 & `CD19-protein` &gt; 60 |\n                          `CD3-protein` &gt; 300 & `CD14-protein`&gt; 100, slot = 'counts', invert = T)\n\n\n# plot again\nIdents(demo_filtered) &lt;- 'orig.ident'\nFeatureScatter(demo_filtered, feature1 = \"CD3-protein\", feature2 = \"CD19-protein\", slot = \"counts\", cols = c(\"black\", \"black\")) +\n  scale_x_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  scale_y_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  ggtitle(\"log1p total counts\") +\n  theme(legend.position = \"none\",\n    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),\n        axis.text.y = element_text(size = 8)) +\n  coord_fixed(ratio = 1) +\n  geom_vline(xintercept = 400, linetype = \"dashed\", color = \"red\", size = 1) +\n  geom_hline(yintercept = 100, linetype = \"dashed\", color = \"red\", size = 1) \n\n\n\n\n\nFeatureScatter(demo_filtered, feature1 = \"CD3-protein\", feature2 = \"CD14-protein\", slot = \"counts\", cols = c(\"black\", \"black\")) +\n  scale_x_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  scale_y_continuous(trans = trans_new(\"log1p\", log1p, expm1)) +\n  ggtitle(\"log1p total counts\") +\n  theme(legend.position = \"none\",\n    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),\n        axis.text.y = element_text(size = 8)) +\n  coord_fixed(ratio = 1) +\n  geom_vline(xintercept = 400, linetype = \"dashed\", color = \"red\", size = 1) +\n  geom_hline(yintercept = 100, linetype = \"dashed\", color = \"red\", size = 1)"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#dimentionality-reduction",
+    "href": "09_202411_online_training_shared.html#dimentionality-reduction",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "4. Dimentionality reduction",
+    "text": "4. Dimentionality reduction\n\n# umap\nVariableFeatures(demo_filtered) &lt;- rownames(demo_filtered) \n\ndemo_filtered &lt;- demo_filtered %&gt;% \n  ScaleData() %&gt;% \n  RunPCA(reduction.name = 'apca') %&gt;% \n  RunUMAP(reduction = 'apca', dims = 1:29, reduction.name = \"aumap\")\n\n\n# elbow plot\nElbowPlot(demo_filtered, reduction = 'apca', ndims = 30)\n\n\n\n\n\n# visualize plots in batch and in protein expression\npal &lt;- viridis::viridis(n = 10, option = \"G\", begin = 0, direction = -1)\n\np1 &lt;- DimPlot(demo_filtered, group.by = \"orig.ident\") + ggtitle('Batch') + theme(axis.title.x = element_blank(), axis.title.y = element_blank())\np2 &lt;- FeaturePlot_scCustom(demo_filtered, features = 'CD14-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())\np3 &lt;- FeaturePlot_scCustom(demo_filtered, features = 'CD4-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())\np4 &lt;- FeaturePlot_scCustom(demo_filtered, features = 'CD8-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())\n\ngrid.arrange(p1, p2, p3, p4, ncol = 2)"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#batch-correction",
+    "href": "09_202411_online_training_shared.html#batch-correction",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "5. Batch correction",
+    "text": "5. Batch correction\n\n# create a new object to store corrected values\ndemo_rpca &lt;- demo_filtered\n\n# step1: split the layers\ndemo_rpca[[\"ADT\"]] &lt;- split(demo_filtered[[\"ADT\"]], f = demo_filtered$orig.ident)\n\n# step2: integrate layers and asign results to new Seurat object\ndemo_rpca &lt;- Seurat::IntegrateLayers(object = demo_rpca, method = 'RPCAIntegration',\n                       orig.reduction = \"apca\",\n                       new.reduction = \"integrated.rpca\",\n                       verbose = FALSE,\n                       features = rownames(demo_filtered),\n                       dims = 1:29)\n\n# step3: re-join layers after integration\ndemo_rpca[[\"ADT\"]] &lt;- JoinLayers(demo_rpca[[\"ADT\"]])\n\n\n# calculate UMAP using the batch corrected values\ndemo_rpca &lt;- RunUMAP(demo_rpca, reduction = 'integrated.rpca', dims = 1:29, reduction.name = \"integrated.rpca.aumap\")\n\n\n# visualize data before and after batch correction\np1 &lt;- DimPlot(demo_rpca, reduction = 'integrated.rpca.aumap', group.by = \"orig.ident\")\np2 &lt;- DimPlot(demo_filtered, group.by = \"orig.ident\")\n\np2|p1"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#clustering-and-annotation",
+    "href": "09_202411_online_training_shared.html#clustering-and-annotation",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "6. Clustering and annotation",
+    "text": "6. Clustering and annotation\n\n# calculate clusters\ndemo_rpca &lt;- FindNeighbors(demo_rpca, dims = 1:29, reduction = 'integrated.rpca', verbose = F)\ndemo_rpca &lt;- FindClusters(demo_rpca, resolution = c(0.1, 0.2, 0.3, 0.5, 0.7, 0.9), verbose = F)\n\n\n# choose resolution 0.2 based on cluster tree\nclustree::clustree(demo_rpca, prefix = \"ADT_snn_res.\")\n\n\n\n\n\n# plot heatmap with a selection of markers\nDefaultAssay(demo_rpca) &lt;- \"ADT\"\nIdents(demo_rpca) &lt;- 'ADT_snn_res.0.2'\n\nDotPlot(demo_rpca, features = c('CD3-protein', 'CD4-protein', 'CD8-protein', 'CD45RA-protein', 'CD11c-protein', 'CD14-protein', 'CD16-protein', 'CD19-protein', 'CD161-protein', 'IgD-protein', 'CD56-protein', 'CD183-protein', 'CD27-protein'), cols = \"RdYlBu\") +\n  theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))\n\n\n\n\n\n# plot heatmap with all markers\nDotPlot(demo_rpca, features = rownames(demo_rpca), cols = \"RdYlBu\") +\n  theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))\n\n\n\n\n\n# plot UMAP with clusters\nDimPlot_scCustom(demo_rpca, group.by = \"ADT_snn_res.0.2\", reduction = 'integrated.rpca.aumap', label = T)\n\n\n\n\n\n# plot UMAP with cell type annotations\nnew.cluster.ids &lt;- c(\"CD14 Monocyte\", \"Memory CD4T\", \"CD8 Teff\", \"Memory CD8T\", \"Naive CD4T\", \"NK\", \"Naive CD8T\", \"CD16 Monocyte\", \"Memore B\", \"CD8 TEM\", \"Naive B\", \"Mait\", \"DC\")\n\nnames(new.cluster.ids) &lt;- levels(demo_rpca)\ndemo_rpca &lt;- RenameIdents(demo_rpca, new.cluster.ids)\nDimPlot(demo_rpca, reduction = \"integrated.rpca.aumap\", label = TRUE, pt.size = 0.5) + NoLegend()"
+  },
+  {
+    "objectID": "09_202411_online_training_shared.html#wnn",
+    "href": "09_202411_online_training_shared.html#wnn",
+    "title": "9. Tips & Tricks - Analysis workflow of protein expression",
+    "section": "7. WNN",
+    "text": "7. WNN\n\n# analysis workflow of RNA\n\n# step1: split the layers ftom \"both\" Seurat object by Sample_Name\ndemo_rpca[[\"RNA\"]] &lt;- split(demo_rpca[[\"RNA\"]], f = demo_rpca$orig.ident)\n\ndemo_rpca &lt;- SCTransform(demo_rpca, vars.to.regress = \"percent.mt\", verbose = FALSE)\ndemo_rpca &lt;- RunPCA(demo_rpca, verbose = FALSE)\ndemo_rpca &lt;- RunUMAP(demo_rpca, verbose = FALSE, dims = 1:30)\n\n# step2: integrate layers and asign results to new Seurat object\ndemo_rpca &lt;- Seurat::IntegrateLayers(object = demo_rpca, method = 'HarmonyIntegration',\n                       orig.reduction = \"pca\",\n                       new.reduction = \"integrated.harmony\",\n                       verbose = FALSE,\n                      assay = \"SCT\")\n\n# step3: re-join layers after integration\ndemo_rpca[[\"RNA\"]] &lt;- JoinLayers(demo_rpca[[\"RNA\"]])\n\n\n# WNN to integrate RNA and protein data\ndemo_rpca &lt;- FindMultiModalNeighbors(\n  demo_rpca, reduction.list = list(\"integrated.harmony\", \"integrated.rpca\"), \n  dims.list = list(1:30, 1:29), modality.weight.name = \"RNA.weight\"\n)\n\ndemo_rpca &lt;- RunUMAP(demo_rpca, nn.name = \"weighted.nn\", reduction.name = \"wnn.umap\", reduction.key = \"wnnUMAP_\")\n\n\n# plot UMAP with WNN data\nDimPlot(demo_rpca, label = T, reduction = 'wnn.umap') + NoLegend()\n\n\n\n\n\n# plotUMAP with RNA data\nDimPlot(demo_rpca, label = T, reduction = 'umap') + NoLegend()"
   }
 ]

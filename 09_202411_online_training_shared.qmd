@@ -1,0 +1,305 @@
+---
+title: "9. Tips & Tricks - Analysis workflow of protein expression"
+execute:
+  warning: false
+  message: false
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+library(tidyverse)
+library(Seurat)
+library(scales)
+library(gridExtra)
+library(scCustomize)
+library(scales)
+library(scCustomize)
+library(ggraph)
+```
+
+This is the tutorial compatible with the Tips&Tricks training held on 27th Nov., 2024.
+
+## 1. Read in data
+
+```{r}
+demo <- readRDS("demo_202411.rds")
+```
+
+## 2. Normalization with CLR
+
+```{r}
+DefaultAssay(demo) <- "ADT"
+
+demo <- NormalizeData(demo, normalization.method = "CLR", margin = 2)
+```
+
+## 3. QC - Outlier
+
+```{r}
+# function to define outlier
+is_outlier <- function(adata, nmads) {
+  # Extract the metric values from the dataset
+  M <- tibble(cell_label = colnames(adata), 
+         log1p_adt = log1p(adata@meta.data$nCount_ADT))
+  
+  # Calculate the median and MAD
+  median_val = median(M$log1p_adt)
+  mad_val = mad(M$log1p_adt)
+  
+  # Determine outliers based on the number of MADs from the median
+  M <- mutate(M, outlier = (M$log1p_adt < median_val - nmads * mad_val) | (M$log1p_adt > median_val + nmads * mad_val))
+  
+  outlier <- dplyr::filter(M, outlier == TRUE) %>% 
+    .$cell_label
+  
+  return(outlier)
+}
+
+# check which cells are outliers in each sample
+sample1_outlier <- is_outlier(adata = subset(demo, subset = orig.ident == "09ABC"), 5)
+sample2_outlier <- is_outlier(adata = subset(demo, subset = orig.ident == "IC-Day1"), 5)
+
+demo_outlier <- c(sample1_outlier, sample1_outlier)
+```
+
+```{r}
+# plot outlier on violin plot
+plot_outlier <- FetchData(demo, vars = "nCount_ADT") %>% 
+  rownames_to_column("cell_label") %>% 
+  dplyr::filter(., cell_label %in% demo_outlier) %>% 
+  mutate(ident = "09ABC")
+
+vln_plot <- VlnPlot(demo, features = "nCount_ADT", pt.size = 0)  
+
+vln_plot +
+  scale_y_log10() +
+  geom_jitter(data = plot_outlier, 
+              aes(x = ident, y = nCount_ADT), 
+              color = "red", 
+              size = 0.5, 
+              width = 0.1, 
+              fill = "red")
+```
+
+```{r}
+# remove outlier
+demo <- subset(demo, cells = demo_outlier, invert = T)
+```
+
+## 3. QC - Doublets
+
+```{r}
+# list all protein markers
+rownames(demo)
+```
+
+```{r}
+FeatureScatter(demo, feature1 = "CD3-protein", feature2 = "CD19-protein", slot = "counts", cols = c("black", "black")) +
+  scale_x_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  scale_y_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  ggtitle("log1p total counts") +
+  theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),
+        axis.text.y = element_text(size = 8)) +
+  coord_fixed(ratio = 1) +
+  geom_vline(xintercept = 300, linetype = "dashed", color = "red", size = 1) +
+  geom_hline(yintercept = 60, linetype = "dashed", color = "red", size = 1) 
+  
+```
+
+```{r}
+FeatureScatter(demo, feature1 = "CD3-protein", feature2 = "CD14-protein", slot = "counts", cols = c("black", "black")) +
+  scale_x_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  scale_y_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  ggtitle("log1p total counts") +
+  theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),
+        axis.text.y = element_text(size = 8)) +
+  coord_fixed(ratio = 1) +
+  geom_vline(xintercept = 300, linetype = "dashed", color = "red", size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red", size = 1) 
+```
+
+```{r}
+# Remove doublets
+demo_filtered <- subset(demo, subset = `CD3-protein` > 300 & `CD19-protein` > 60 |
+                          `CD3-protein` > 300 & `CD14-protein`> 100, slot = 'counts', invert = T)
+```
+
+```{r}
+# plot again
+Idents(demo_filtered) <- 'orig.ident'
+FeatureScatter(demo_filtered, feature1 = "CD3-protein", feature2 = "CD19-protein", slot = "counts", cols = c("black", "black")) +
+  scale_x_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  scale_y_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  ggtitle("log1p total counts") +
+  theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),
+        axis.text.y = element_text(size = 8)) +
+  coord_fixed(ratio = 1) +
+  geom_vline(xintercept = 400, linetype = "dashed", color = "red", size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red", size = 1) 
+```
+
+```{r}
+FeatureScatter(demo_filtered, feature1 = "CD3-protein", feature2 = "CD14-protein", slot = "counts", cols = c("black", "black")) +
+  scale_x_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  scale_y_continuous(trans = trans_new("log1p", log1p, expm1)) +
+  ggtitle("log1p total counts") +
+  theme(legend.position = "none",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8),
+        axis.text.y = element_text(size = 8)) +
+  coord_fixed(ratio = 1) +
+  geom_vline(xintercept = 400, linetype = "dashed", color = "red", size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red", size = 1) 
+```
+
+## 4. Dimentionality reduction
+
+```{r}
+# umap
+VariableFeatures(demo_filtered) <- rownames(demo_filtered) 
+
+demo_filtered <- demo_filtered %>% 
+  ScaleData() %>% 
+  RunPCA(reduction.name = 'apca') %>% 
+  RunUMAP(reduction = 'apca', dims = 1:29, reduction.name = "aumap")
+```
+
+```{r}
+# elbow plot
+ElbowPlot(demo_filtered, reduction = 'apca', ndims = 30)
+```
+
+```{r}
+# visualize plots in batch and in protein expression
+pal <- viridis::viridis(n = 10, option = "G", begin = 0, direction = -1)
+
+p1 <- DimPlot(demo_filtered, group.by = "orig.ident") + ggtitle('Batch') + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+p2 <- FeaturePlot_scCustom(demo_filtered, features = 'CD14-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+p3 <- FeaturePlot_scCustom(demo_filtered, features = 'CD4-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+p4 <- FeaturePlot_scCustom(demo_filtered, features = 'CD8-protein', colors_use = pal) + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+## 5. Batch correction
+
+```{r}
+# create a new object to store corrected values
+demo_rpca <- demo_filtered
+
+# step1: split the layers
+demo_rpca[["ADT"]] <- split(demo_filtered[["ADT"]], f = demo_filtered$orig.ident)
+
+# step2: integrate layers and asign results to new Seurat object
+demo_rpca <- Seurat::IntegrateLayers(object = demo_rpca, method = 'RPCAIntegration',
+                       orig.reduction = "apca",
+                       new.reduction = "integrated.rpca",
+                       verbose = FALSE,
+                       features = rownames(demo_filtered),
+                       dims = 1:29)
+
+# step3: re-join layers after integration
+demo_rpca[["ADT"]] <- JoinLayers(demo_rpca[["ADT"]])
+```
+
+```{r}
+# calculate UMAP using the batch corrected values
+demo_rpca <- RunUMAP(demo_rpca, reduction = 'integrated.rpca', dims = 1:29, reduction.name = "integrated.rpca.aumap")
+```
+
+```{r}
+# visualize data before and after batch correction
+p1 <- DimPlot(demo_rpca, reduction = 'integrated.rpca.aumap', group.by = "orig.ident")
+p2 <- DimPlot(demo_filtered, group.by = "orig.ident")
+
+p2|p1
+```
+
+## 6. Clustering and annotation
+
+```{r}
+# calculate clusters
+demo_rpca <- FindNeighbors(demo_rpca, dims = 1:29, reduction = 'integrated.rpca', verbose = F)
+demo_rpca <- FindClusters(demo_rpca, resolution = c(0.1, 0.2, 0.3, 0.5, 0.7, 0.9), verbose = F)
+```
+
+```{r fig.height=10}
+# choose resolution 0.2 based on cluster tree
+clustree::clustree(demo_rpca, prefix = "ADT_snn_res.")
+```
+
+```{r fig.width=10}
+# plot heatmap with a selection of markers
+DefaultAssay(demo_rpca) <- "ADT"
+Idents(demo_rpca) <- 'ADT_snn_res.0.2'
+
+DotPlot(demo_rpca, features = c('CD3-protein', 'CD4-protein', 'CD8-protein', 'CD45RA-protein', 'CD11c-protein', 'CD14-protein', 'CD16-protein', 'CD19-protein', 'CD161-protein', 'IgD-protein', 'CD56-protein', 'CD183-protein', 'CD27-protein'), cols = "RdYlBu") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))
+```
+
+```{r fig.width=10}
+# plot heatmap with all markers
+DotPlot(demo_rpca, features = rownames(demo_rpca), cols = "RdYlBu") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1))
+```
+
+```{r}
+# plot UMAP with clusters
+DimPlot_scCustom(demo_rpca, group.by = "ADT_snn_res.0.2", reduction = 'integrated.rpca.aumap', label = T)
+```
+
+```{r fig.width=10}
+# plot UMAP with cell type annotations
+new.cluster.ids <- c("CD14 Monocyte", "Memory CD4T", "CD8 Teff", "Memory CD8T", "Naive CD4T", "NK", "Naive CD8T", "CD16 Monocyte", "Memore B", "CD8 TEM", "Naive B", "Mait", "DC")
+
+names(new.cluster.ids) <- levels(demo_rpca)
+demo_rpca <- RenameIdents(demo_rpca, new.cluster.ids)
+DimPlot(demo_rpca, reduction = "integrated.rpca.aumap", label = TRUE, pt.size = 0.5) + NoLegend()
+```
+
+## 7. WNN
+
+```{r}
+# analysis workflow of RNA
+
+# step1: split the layers ftom "both" Seurat object by Sample_Name
+demo_rpca[["RNA"]] <- split(demo_rpca[["RNA"]], f = demo_rpca$orig.ident)
+
+demo_rpca <- SCTransform(demo_rpca, vars.to.regress = "percent.mt", verbose = FALSE)
+demo_rpca <- RunPCA(demo_rpca, verbose = FALSE)
+demo_rpca <- RunUMAP(demo_rpca, verbose = FALSE, dims = 1:30)
+
+# step2: integrate layers and asign results to new Seurat object
+demo_rpca <- Seurat::IntegrateLayers(object = demo_rpca, method = 'HarmonyIntegration',
+                       orig.reduction = "pca",
+                       new.reduction = "integrated.harmony",
+                       verbose = FALSE,
+                      assay = "SCT")
+
+# step3: re-join layers after integration
+demo_rpca[["RNA"]] <- JoinLayers(demo_rpca[["RNA"]])
+```
+
+```{r}
+# WNN to integrate RNA and protein data
+demo_rpca <- FindMultiModalNeighbors(
+  demo_rpca, reduction.list = list("integrated.harmony", "integrated.rpca"), 
+  dims.list = list(1:30, 1:29), modality.weight.name = "RNA.weight"
+)
+
+demo_rpca <- RunUMAP(demo_rpca, nn.name = "weighted.nn", reduction.name = "wnn.umap", reduction.key = "wnnUMAP_")
+```
+
+```{r fig.width=10}
+# plot UMAP with WNN data
+DimPlot(demo_rpca, label = T, reduction = 'wnn.umap') + NoLegend()
+```
+
+```{r fig.width=10}
+# plotUMAP with RNA data
+DimPlot(demo_rpca, label = T, reduction = 'umap') + NoLegend()
+```
