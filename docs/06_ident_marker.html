@@ -4487,7 +4487,7 @@ vertical-align: -.125em;
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Single Cell Analysis with R on BD Rhapsody</a> 
+      <a href="./">Single Cell Analysis with R - BD Rhapsody demo data</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -4559,8 +4559,14 @@ vertical-align: -.125em;
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./09_202411_online_training_shared.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Tips &amp; Tricks - Analysis workflow of protein expression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./bioinformatics_update.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bioinformatics update</span></a>
+ <span class="menu-text">Useful resources</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -4748,7 +4754,7 @@ Tip
 <span><span class="co"># NOTE: scRNAseqData parameter should correspond to your input scRNA-seq matrix.</span></span>
 <span><span class="co"># In case Seurat is used, it is either GetAssayData(seuratObj[[&quot;RNA&quot;]], layer = &quot;scale.data&quot;), in case sctransform is used for normalization,</span></span>
 <span><span class="co"># or GetAssayData(seuratObj[[&quot;integrated&quot;]], layer = &quot;scale.data&quot;), in case a joint analysis of multiple single-cell datasets is performed.</span></span>
-<span><span class="va">es.max</span> <span class="op">&lt;-</span>  <span class="fu">sctype_score</span><span class="op">(</span>scRNAseqData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/AssayData.html">GetAssayData</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">[[</span><span class="st">&quot;RNA&quot;</span><span class="op">]</span><span class="op">]</span>, layer <span class="op">=</span> <span class="st">&quot;scale.data&quot;</span><span class="op">)</span>,</span>
+<span><span class="va">es.max</span> <span class="op">&lt;-</span>  <span class="fu">sctype_score</span><span class="op">(</span>scRNAseqData <span class="op">=</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AssayData.html">GetAssayData</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">[[</span><span class="st">&quot;RNA&quot;</span><span class="op">]</span><span class="op">]</span>, layer <span class="op">=</span> <span class="st">&quot;scale.data&quot;</span><span class="op">)</span>,</span>
 <span>                        scaled <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                        gs <span class="op">=</span> <span class="va">gs_list</span><span class="op">$</span><span class="va">gs_positive</span>,</span>
 <span>                        gs2 <span class="op">=</span> <span class="va">gs_list</span><span class="op">$</span><span class="va">gs_negative</span><span class="op">)</span></span>

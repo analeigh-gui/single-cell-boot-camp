@@ -14,7 +14,7 @@ project:
       - 07_differential_expression_analysis.qmd
       - 08_enrichment_analysis.qmd
       - 09_202411_online_training_shared.qmd
-      # - bioinformatics_update.qmd
+      - bioinformatics_update.qmd
       - sessioninfo.qmd
       - log.qmd
 
@@ -36,7 +36,7 @@ website:
       - 07_differential_expression_analysis.qmd
       - 08_enrichment_analysis.qmd
       - 09_202411_online_training_shared.qmd
-      # - bioinformatics_update.qmd
+      - bioinformatics_update.qmd
       - sessioninfo.qmd
       - log.qmd
 

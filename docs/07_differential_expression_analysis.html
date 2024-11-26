@@ -4487,7 +4487,7 @@ vertical-align: -.125em;
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Single Cell Analysis with R on BD Rhapsody</a> 
+      <a href="./">Single Cell Analysis with R - BD Rhapsody demo data</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -4559,8 +4559,14 @@ vertical-align: -.125em;
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./09_202411_online_training_shared.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Tips &amp; Tricks - Analysis workflow of protein expression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./bioinformatics_update.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bioinformatics update</span></a>
+ <span class="menu-text">Useful resources</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -4625,10 +4631,10 @@ vertical-align: -.125em;
 <p><code>ident.2</code> (SampleTag01_hs): Naïve PBMC</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># change default assay to &quot;RNA&quot;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/DefaultAssay.html">DefaultAssay</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html">DefaultAssay</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
 <span></span>
 <span><span class="co"># change default identity to &quot;Sample_Name&quot;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/Idents.html">Idents</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Sample_Name&quot;</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html">Idents</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Sample_Name&quot;</span></span>
 <span></span>
 <span><span class="co"># Find genes differentially expressed</span></span>
 <span><span class="co"># SampleTag02_hs: treated, SampleTag01_hs: naive</span></span>
@@ -4661,7 +4667,7 @@ vertical-align: -.125em;
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">filtered</span><span class="op">$</span><span class="va">predicted.celltype.l1.tag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">$</span><span class="va">predicted.celltype.l1</span>, <span class="va">filtered</span><span class="op">$</span><span class="va">Sample_Name</span>, sep <span class="op">=</span> <span class="st">&quot;_&quot;</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Find genes differentially expressed between activated vs. naive samples in CD4 T cells</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/Idents.html">Idents</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;predicted.celltype.l1.tag&quot;</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html">Idents</a></span><span class="op">(</span><span class="va">filtered</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;predicted.celltype.l1.tag&quot;</span></span>
 <span></span>
 <span><span class="va">cd4t.deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindMarkers.html">FindMarkers</a></span><span class="op">(</span><span class="va">filtered</span>, </span>
 <span>                       ident.1 <span class="op">=</span> <span class="st">&quot;CD4 T_SampleTag02_hs&quot;</span>, </span>
@@ -4694,7 +4700,7 @@ HSP90AB1 1.010564e-172   2.587901 0.864 0.532 2.850497e-168</code></pre>
 <span><span class="co"># perform pseudobulk</span></span>
 <span><span class="va">pseudo</span><span class="op">$</span><span class="va">predicted.celltype.l1.tag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">pseudo</span><span class="op">$</span><span class="va">predicted.celltype.l1</span>, <span class="va">pseudo</span><span class="op">$</span><span class="va">Sample_Name</span>, sep <span class="op">=</span> <span class="st">&quot;_&quot;</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/Idents.html">Idents</a></span><span class="op">(</span><span class="va">pseudo</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;predicted.celltype.l1.tag&quot;</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html">Idents</a></span><span class="op">(</span><span class="va">pseudo</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;predicted.celltype.l1.tag&quot;</span></span>
 <span></span>
 <span><span class="va">cd4t.bulk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindMarkers.html">FindMarkers</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pseudo</span>, </span>
 <span>                         ident.1 <span class="op">=</span> <span class="st">&quot;CD4 T_SampleTag02-hs&quot;</span>, </span>

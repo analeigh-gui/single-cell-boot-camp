@@ -1,5 +1,5 @@
 ---
-title: "Bioinformatics update"
+title: "Useful resources"
 execute:
   warning: false
   message: false
