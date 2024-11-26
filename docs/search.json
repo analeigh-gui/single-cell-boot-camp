@@ -480,7 +480,7 @@
     "href": "09_202411_online_training_shared.html#read-in-data",
     "title": "9. Tips & Tricks - Analysis workflow of protein expression",
     "section": "1. Read in data",
-    "text": "1. Read in data\n\ndemo &lt;- readRDS(\"demo_202411.rds\")"
+    "text": "1. Read in data\n\n# the download link of the demo data is not yet available\n# please write to biox_support_emea@bd.com to request the data\n\ndemo &lt;- readRDS(\"demo_202411.rds\")"
   },
   {
     "objectID": "09_202411_online_training_shared.html#normalization-with-clr",

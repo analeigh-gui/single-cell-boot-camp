@@ -24,6 +24,9 @@ This is the tutorial compatible with the Tips&Tricks training held on 27th Nov.,
 ## 1. Read in data
 
 ```{r}
+# the download link of the demo data is not yet available
+# please write to biox_support_emea@bd.com to request the data
+
 demo <- readRDS("demo_202411.rds")
 ```
 
