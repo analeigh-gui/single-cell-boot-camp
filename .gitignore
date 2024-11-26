@@ -3,6 +3,7 @@ precourse_preparation_theory.qmd
 
 # ignore *
 *.Rproj.user
+*.rds
 *.Rhistory
 *.RData
 *.Ruserdata
