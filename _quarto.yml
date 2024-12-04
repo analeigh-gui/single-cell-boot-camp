@@ -19,9 +19,14 @@ project:
       - log.qmd
 
 website:
+  title: "Single Cell Analysis with R - BD Rhapsody"
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/analeigh-gui/single-cell-boot-camp
+        aria-label: GitHub
   sidebar:
     style: "docked"
-    title: "Single Cell Analysis with R - BD Rhapsody demo data"
     search: true
     page-navigation: true
     contents:

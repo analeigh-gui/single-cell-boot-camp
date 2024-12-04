@@ -6,6 +6,10 @@ execute:
   eval: false
 ---
 
+## 20241204
+1. Update github link
+2. Add chapter 9: Tips & Tricks - Analysis workflow of protein expression
+
 ## 20240603
 Installing Azimuth with the latest version
 ```{r}
@@ -103,7 +107,7 @@ The following chapters have the below changes:
 
 The following chapters have the below changes:
 
-## **Setup**
+## Setup
 
 1.  Add instruction to install Seurat V4.
 2.  Add instruction to update packages.
@@ -111,7 +115,7 @@ The following chapters have the below changes:
 4.  Add packages to be installed: HGNChelper, ggpubr, RTools.
 5.  Update Data download link.
 
-## **Precourse preperation - R**
+## Precourse preperation - R
 
 1.  Add data download link
 
@@ -133,7 +137,7 @@ The following chapters have the below changes:
 1.  Replace ranking in GSEA gene list from stat to log2FC
 2.  Force enrich bar plots to plot GO terms with the key word "T Cell"
 
-## **Error log**
+## Error log
 
 1.  When you run `RunUMAP`...
 

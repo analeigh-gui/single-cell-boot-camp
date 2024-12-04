@@ -6,13 +6,9 @@ execute:
   eval: false
 ---
 
-## How to prepare the Single Cell Boot Camp?
-
-To gain a better understanding of programming language R and the single cell analysis workflow, it is highly recommended to download the GitHub materials and practice them on your own desktop before the Single Cell Boot Camp. **We have found that individuals who go through the material tend to have a much more successful learning experience.**
-
 ## 1. Download materials from the Github page
 
-Visit GitHub repository: <https://github.com/material-share/material-share-single-cell-boot-camp>
+Visit GitHub repository: <https://github.com/analeigh-gui/single-cell-boot-camp>
 
 Click on **Code**.
 
@@ -115,4 +111,4 @@ To start practicing, go to the download folder, and double click **single-cell-b
 
 ## 4. Reporting bugs
 
-To report any bugs, please create an issue in the following GitHub repository: <https://github.com/material-share/material-share-single-cell-boot-camp/issues>.
+To report any bugs, please create an issue in the following GitHub repository: <https://github.com/analeigh-gui/single-cell-boot-camp>.

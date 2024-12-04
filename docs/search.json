@@ -4,49 +4,49 @@
     "href": "log.html",
     "title": "Log",
     "section": "",
-    "text": "Installing Azimuth with the latest version\n\nremotes::install_github('satijalab/azimuth', ref = 'master')"
+    "text": "Update github link\nAdd chapter 9: Tips & Tricks - Analysis workflow of protein expression"
   },
   {
     "objectID": "log.html#section",
     "href": "log.html#section",
     "title": "Log",
     "section": "",
-    "text": "Installing Azimuth with the latest version\n\nremotes::install_github('satijalab/azimuth', ref = 'master')"
+    "text": "Update github link\nAdd chapter 9: Tips & Tricks - Analysis workflow of protein expression"
   },
   {
     "objectID": "log.html#section-1",
     "href": "log.html#section-1",
     "title": "Log",
-    "section": "20240507",
-    "text": "20240507\nSeurat V4 Optional: The materials are updated to Seurat V5. If you want to use Seurat V4, you can follow the below instruction to install Seurat V4. Please note that you may need to adapt the code to fit Seurat V4 structure.\nFirst check the version of installed SeuratObject and Seurat.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")\n\nIf the version is 5.0.x, please follow the below instructions to remove the existing Seurat package and install Seurat V4.\n\nremove.packages(\"SeuratObject\")\nremove.packages(\"Seurat\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.1.4.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\n# Validate the installation is successful by running packageVersion.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")"
+    "section": "20240603",
+    "text": "20240603\nInstalling Azimuth with the latest version\n\nremotes::install_github('satijalab/azimuth', ref = 'master')"
   },
   {
     "objectID": "log.html#section-2",
     "href": "log.html#section-2",
     "title": "Log",
-    "section": "20240423",
-    "text": "20240423\nExtra plots\n\nseuratObj$test &lt;- ifelse(seuratObj$nFeature_RNA &lt; 300 | seuratObj$nCount_RNA &lt; 500, \"low\", \"high\")\n\n\nseuratObj@meta.data %&gt;%\n  ggplot(aes(x=nCount_RNA, y=nFeature_RNA, color=test)) +\n  geom_point() +\n  scale_colour_manual(values = c(\"black\", \"white\")) +\n  # stat_smooth(method=lm) +\n  scale_x_log10() +\n  scale_y_log10() +\n  theme_classic() +\n  geom_vline(xintercept = 500, colour = \"red\") +\n  geom_hline(yintercept = 300, colour = \"red\") +\n  facet_wrap(~Sample_Name) +\n  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))\n\nMove “multiplet” and “undetermined” removal to Chapter 02 Quality Control\nChapter 01 Update data import\n\n# update Seurat object\nseuratObj[[\"RNA\"]] &lt;- as(object = seuratObj[[\"RNA\"]], Class = \"Assay5\") \n\n# get bioproduct names for RNA and AbSeq\nab_name &lt;- grep(\"pAbO\", rownames(seuratObj), value = T, ignore.case = T)\nrna_name &lt;- rownames(seuratObj)[-which(rownames(seuratObj) %in% ab_name)]\n\n# get rna and AbSeq UMI counts, meta data\nab &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = ab_name)\nrna &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = rna_name)\n\n# recreate seurat object\nseuratObj[[\"RNA\"]] &lt;- CreateAssay5Object(counts = rna, min.cells = 0, min.features = 0)\nseuratObj[[\"ADT\"]] &lt;- CreateAssay5Object(counts = ab, min.cells = 0, min.features = 0)"
+    "section": "20240507",
+    "text": "20240507\nSeurat V4 Optional: The materials are updated to Seurat V5. If you want to use Seurat V4, you can follow the below instruction to install Seurat V4. Please note that you may need to adapt the code to fit Seurat V4 structure.\nFirst check the version of installed SeuratObject and Seurat.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")\n\nIf the version is 5.0.x, please follow the below instructions to remove the existing Seurat package and install Seurat V4.\n\nremove.packages(\"SeuratObject\")\nremove.packages(\"Seurat\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.1.4.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\npackageurl &lt;- \"https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz\" \ninstall.packages(packageurl, repos=NULL, type=\"source\")\n\n# Validate the installation is successful by running packageVersion.\n\npackageVersion(\"SeuratObject\")\npackageVersion(\"Seurat\")"
   },
   {
     "objectID": "log.html#section-3",
     "href": "log.html#section-3",
     "title": "Log",
-    "section": "20240216",
-    "text": "20240216\n\nUpdated to Seurat V5\nArchive precourse_preparation_theory.qmd for future development\nhttps://github.com/satijalab/seurat/issues/8202"
+    "section": "20240423",
+    "text": "20240423\nExtra plots\n\nseuratObj$test &lt;- ifelse(seuratObj$nFeature_RNA &lt; 300 | seuratObj$nCount_RNA &lt; 500, \"low\", \"high\")\n\n\nseuratObj@meta.data %&gt;%\n  ggplot(aes(x=nCount_RNA, y=nFeature_RNA, color=test)) +\n  geom_point() +\n  scale_colour_manual(values = c(\"black\", \"white\")) +\n  # stat_smooth(method=lm) +\n  scale_x_log10() +\n  scale_y_log10() +\n  theme_classic() +\n  geom_vline(xintercept = 500, colour = \"red\") +\n  geom_hline(yintercept = 300, colour = \"red\") +\n  facet_wrap(~Sample_Name) +\n  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))\n\nMove “multiplet” and “undetermined” removal to Chapter 02 Quality Control\nChapter 01 Update data import\n\n# update Seurat object\nseuratObj[[\"RNA\"]] &lt;- as(object = seuratObj[[\"RNA\"]], Class = \"Assay5\") \n\n# get bioproduct names for RNA and AbSeq\nab_name &lt;- grep(\"pAbO\", rownames(seuratObj), value = T, ignore.case = T)\nrna_name &lt;- rownames(seuratObj)[-which(rownames(seuratObj) %in% ab_name)]\n\n# get rna and AbSeq UMI counts, meta data\nab &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = ab_name)\nrna &lt;- GetAssayData(seuratObj[[\"RNA\"]], features = rna_name)\n\n# recreate seurat object\nseuratObj[[\"RNA\"]] &lt;- CreateAssay5Object(counts = rna, min.cells = 0, min.features = 0)\nseuratObj[[\"ADT\"]] &lt;- CreateAssay5Object(counts = ab, min.cells = 0, min.features = 0)"
   },
   {
     "objectID": "log.html#section-4",
     "href": "log.html#section-4",
     "title": "Log",
-    "section": "20231129",
-    "text": "20231129\nThe following chapters have the below changes:\nChapter 7 Differential Expression Analysis\n\nRemove log2FC correlation plot."
+    "section": "20240216",
+    "text": "20240216\n\nUpdated to Seurat V5\nArchive precourse_preparation_theory.qmd for future development\nhttps://github.com/satijalab/seurat/issues/8202"
   },
   {
     "objectID": "log.html#section-5",
     "href": "log.html#section-5",
     "title": "Log",
-    "section": "20231128",
-    "text": "20231128\nThe following chapters have the below changes:"
+    "section": "20231129",
+    "text": "20231129\nThe following chapters have the below changes:\nChapter 7 Differential Expression Analysis\n\nRemove log2FC correlation plot."
   },
   {
     "objectID": "log.html#setup",
@@ -270,7 +270,7 @@
     "href": "00_setup.html",
     "title": "Setup R and RStudio on Desktop",
     "section": "",
-    "text": "To gain a better understanding of programming language R and the single cell analysis workflow, it is highly recommended to download the GitHub materials and practice them on your own desktop before the Single Cell Boot Camp. We have found that individuals who go through the material tend to have a much more successful learning experience."
+    "text": "Visit GitHub repository: https://github.com/analeigh-gui/single-cell-boot-camp\nClick on Code.\nSelect Download ZIP in the drop down menu (Example below).\n\nUnzip the downloaded file.\nIf you do not have R and RStudio on your desktop, please follow the next section to set up R and RStudio."
   },
   {
     "objectID": "00_setup.html#how-to-prepare-the-single-cell-boot-camp",
@@ -283,8 +283,8 @@
     "objectID": "00_setup.html#download-materials-from-the-github-page",
     "href": "00_setup.html#download-materials-from-the-github-page",
     "title": "Setup R and RStudio on Desktop",
-    "section": "1. Download materials from the Github page",
-    "text": "1. Download materials from the Github page\nVisit GitHub repository: https://github.com/material-share/material-share-single-cell-boot-camp\nClick on Code.\nSelect Download ZIP in the drop down menu (Example below).\n\nUnzip the downloaded file.\nIf you do not have R and RStudio on your desktop, please follow the next section to set up R and RStudio."
+    "section": "",
+    "text": "Visit GitHub repository: https://github.com/analeigh-gui/single-cell-boot-camp\nClick on Code.\nSelect Download ZIP in the drop down menu (Example below).\n\nUnzip the downloaded file.\nIf you do not have R and RStudio on your desktop, please follow the next section to set up R and RStudio."
   },
   {
     "objectID": "00_setup.html#set-up-r-and-rstudio",
@@ -315,11 +315,11 @@
     "text": "This repository contains the teaching materials of Single Cell Boot Camp - Analyzing scRNA-seq with R. The boot camp aims to provide an overview of the scRNAseq analysis workflow. It begins with a fast-paced session on the analysis workflow and proceeds with hands-on practice using bioinformatics framework, Seurat."
   },
   {
-    "objectID": "00_about.html#prerequisites-to-attend-the-single-cell-boot-camp",
-    "href": "00_about.html#prerequisites-to-attend-the-single-cell-boot-camp",
+    "objectID": "00_about.html#prerequisites",
+    "href": "00_about.html#prerequisites",
     "title": "Introduction",
-    "section": "Prerequisites to attend the Single Cell Boot Camp",
-    "text": "Prerequisites to attend the Single Cell Boot Camp\nEach participant are expected to have:\nThe following statistical concepts:\n\nmedian: A measure of central tendency that represents the middle value in a dataset when arranged in ascending order.\nlog2 fold change: A measure used in gene expression analysis to quantify the difference in expression levels between two conditions.\np-value: A statistical measure that helps determine the significance of a result in the context of a hypothesis test.\nadjusted p-value: A corrected p-value that accounts for multiple comparisons to control for false positive.\nvariance: A measure of how much the values in a dataset deviate from the mean.\nprincipal component analysis (PCA): A technique used to reduce the dimensionality of high-dimensional data while capturing most of its variance.\n\nAdditionally, participants should have a basic understanding of R and the tidyverse package. Familiarity with the following functions will be useful:\n\n%&gt;% (pipe): Allows for chaining multiple operations together.\nfilter: Selects specific rows from a dataset on given conditions.\nmutate: Adds new variables or modifies existing ones in a dataset.\nselect: Selects specific columns from a dataset.\nleft_join: Merges two datasets based on a common key, keeping only the matching records from the left dataset.\n\nFor self-learning of R programming and the tidyverse package, it is recommended study Chapter 1 - 4 from MordernDive."
+    "section": "Prerequisites",
+    "text": "Prerequisites\nEach participant are expected to have:\nThe following statistical concepts:\n\nmedian: A measure of central tendency that represents the middle value in a dataset when arranged in ascending order.\nlog2 fold change: A measure used in gene expression analysis to quantify the difference in expression levels between two conditions.\np-value: A statistical measure that helps determine the significance of a result in the context of a hypothesis test.\nadjusted p-value: A corrected p-value that accounts for multiple comparisons to control for false positive.\nvariance: A measure of how much the values in a dataset deviate from the mean.\nprincipal component analysis (PCA): A technique used to reduce the dimensionality of high-dimensional data while capturing most of its variance.\n\nAdditionally, participants should have a basic understanding of R and the tidyverse package. Familiarity with the following functions will be useful:\n\n%&gt;% (pipe): Allows for chaining multiple operations together.\nfilter: Selects specific rows from a dataset on given conditions.\nmutate: Adds new variables or modifies existing ones in a dataset.\nselect: Selects specific columns from a dataset.\nleft_join: Merges two datasets based on a common key, keeping only the matching records from the left dataset.\n\nFor self-learning of R programming and the tidyverse package, it is recommended study Chapter 1 - 4 from MordernDive."
   },
   {
     "objectID": "00_about.html#expected-outcome",
@@ -333,14 +333,7 @@
     "href": "00_about.html#reference",
     "title": "Introduction",
     "section": "Reference",
-    "text": "Reference\nThe building of materials references and relies on many excellent and well-written public available materials. Some of the main references for the course include:\n\nSeurat https://satijalab.org/seurat/\nSingle Cell Best Practices: https://www.sc-best-practices.org/preamble.html\nOrchestrating Single-Cell Analysis with Bioconductor: https://bioconductor.org/books/release/OSCA/\nMary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, & Radhika Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq Lessons from HCBC (first release). Zenodo. https://doi.org/10.5281/zenodo.5826256"
-  },
-  {
-    "objectID": "00_about.html#reporting-bugs",
-    "href": "00_about.html#reporting-bugs",
-    "title": "Introduction",
-    "section": "Reporting bugs",
-    "text": "Reporting bugs\nTo report any bugs, please create an issue in the following GitHub repository: https://github.com/material-share/material-share-single-cell-boot-camp/issues."
+    "text": "Reference\nThe building of materials references and relies on many excellent public available materials. Some of the main references are:\n\nSeurat https://satijalab.org/seurat/\nSingle Cell Best Practices: https://www.sc-best-practices.org/preamble.html\nOrchestrating Single-Cell Analysis with Bioconductor: https://bioconductor.org/books/release/OSCA/\nMary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, & Radhika Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq Lessons from HCBC (first release). Zenodo. https://doi.org/10.5281/zenodo.5826256"
   },
   {
     "objectID": "00_about.html#disclaimer",
@@ -354,7 +347,7 @@
     "href": "00_about.html#license",
     "title": "Introduction",
     "section": "License",
-    "text": "License\nMIT License\nCopyright (c) 2023 material-share\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+    "text": "License\nMIT License\nCopyright (c) 2024\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
   },
   {
     "objectID": "01_data_import.html",
@@ -530,5 +523,12 @@
     "title": "SessionInfo",
     "section": "",
     "text": "Note\n\n\n\n\nsessionInfo()\n\nR version 4.3.0 (2023-04-21)\nPlatform: x86_64-apple-darwin20 (64-bit)\nRunning under: macOS 15.1.1\n\nMatrix products: default\nBLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib \nLAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0\n\nlocale:\n[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8\n\ntime zone: Europe/Amsterdam\ntzcode source: internal\n\nattached base packages:\n[1] stats     graphics  grDevices utils     datasets  methods   base     \n\nloaded via a namespace (and not attached):\n [1] htmlwidgets_1.6.4 compiler_4.3.0    fastmap_1.2.0     cli_3.6.3        \n [5] tools_4.3.0       htmltools_0.5.8.1 rstudioapi_0.16.0 yaml_2.3.9       \n [9] rmarkdown_2.27    knitr_1.48        jsonlite_1.8.8    xfun_0.45        \n[13] digest_0.6.36     rlang_1.1.4       evaluate_0.24.0"
+  },
+  {
+    "objectID": "log.html#section-6",
+    "href": "log.html#section-6",
+    "title": "Log",
+    "section": "20231128",
+    "text": "20231128\nThe following chapters have the below changes:"
   }
 ]

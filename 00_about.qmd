@@ -15,7 +15,7 @@ overview of the scRNAseq analysis workflow. It begins with a fast-paced
 session on the analysis workflow and proceeds with hands-on practice
 using bioinformatics framework, Seurat.
 
-## Prerequisites to attend the Single Cell Boot Camp
+## Prerequisites
 
 Each participant are expected to have:
 
@@ -68,9 +68,8 @@ reduction, clustering, and cell type annotation.
 
 ## Reference
 
-The building of materials references and relies on many excellent and
-well-written public available materials. Some of the main references for
-the course include:
+The building of materials references and relies on many excellent public
+available materials. Some of the main references are:
 
 1.  Seurat <https://satijalab.org/seurat/>
 2.  Single Cell Best Practices:
@@ -81,12 +80,6 @@ the course include:
     Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq
     Lessons from HCBC (first release). Zenodo.
     <https://doi.org/10.5281/zenodo.5826256>
-
-## Reporting bugs
-
-To report any bugs, please create an issue in the following GitHub
-repository:
-<https://github.com/material-share/material-share-single-cell-boot-camp/issues>.
 
 ## Disclaimer
 
@@ -113,7 +106,7 @@ objectives.
 
 MIT License
 
-Copyright (c) 2023 material-share
+Copyright (c) 2024
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
