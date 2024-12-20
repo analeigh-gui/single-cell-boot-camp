@@ -139,47 +139,13 @@ The other type of automatic annotation is to leverage the knowledge of known cel
 
 ScType is a computational platform designed for this purpose. It operates solely based on given scRNAseq data, combined with a comprehensive cell marker database as background information. It prioritizes highly specific markers for accurate annotation, even for rare cell types with distinct molecular features.
 
-It collects the known cell type markers of common tissue types. We already download the known cell type markers from ScType and store it in a file "ScTyepDB_short.xlsx". You should be able to find this file in the downloaded folder.
+It collects the known cell type markers of common tissue types in the wrapper. If you would like to prepare your own marker gene list, please consult <https://github.com/IanevskiAleksandr/sc-type>.
 
 ```{r}
-# load ScType R functions
-source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R"); source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
+# load ScType wrapper
+source("https://raw.githubusercontent.com/kris-nader/sc-type/master/R/sctype_wrapper.R")
 
-# get cell-type-specific gene sets from our in-built database (DB)
-# list downloaded from https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_short.xlsx
-# e.g. Immune system, Liver, Pancreas, Kidney, Eye, Brain
-gs_list <-  gene_sets_prepare("ScTypeDB_short.xlsx", "Immune system")
-
-# assign cell types
-# NOTE: scRNAseqData parameter should correspond to your input scRNA-seq matrix.
-# In case Seurat is used, it is either GetAssayData(seuratObj[["RNA"]], layer = "scale.data"), in case sctransform is used for normalization,
-# or GetAssayData(seuratObj[["integrated"]], layer = "scale.data"), in case a joint analysis of multiple single-cell datasets is performed.
-es.max <-  sctype_score(scRNAseqData = GetAssayData(filtered[["RNA"]], layer = "scale.data"),
-                        scaled = TRUE,
-                        gs = gs_list$gs_positive,
-                        gs2 = gs_list$gs_negative)
-
-# merge by cluster
-cL_resutls = do.call("rbind", lapply(unique(filtered@meta.data$RNA_snn_res.0.4), function(cl){
-    es.max.cl = sort(rowSums(es.max[ ,rownames(filtered@meta.data[filtered@meta.data$RNA_snn_res.0.4==cl, ])]), decreasing = !0)
-    head(data.frame(cluster = cl, type = names(es.max.cl), scores = es.max.cl, ncells = sum(filtered@meta.data$filtered==cl)), 10)
-}))
-
-sctype_scores = cL_resutls %>% group_by(cluster) %>% top_n(n = 1, wt = scores)
-
-# set low-confident (low ScType score) clusters to "unknown"
-sctype_scores$type[as.numeric(as.character(sctype_scores$scores)) < sctype_scores$ncells/4] = "Unknown"
-```
-
-```{r}
-filtered@meta.data$customclassif = ""
-
-for(j in unique(sctype_scores$cluster)){
-  cl_type = sctype_scores[sctype_scores$cluster==j,];
-  filtered@meta.data$customclassif[filtered@meta.data$RNA_snn_res.0.4 == j] = as.character(cl_type$type[1])
-}
-
-DimPlot(filtered, reduction = "umap", label = TRUE, repel = TRUE, group.by = 'customclassif')
+filtered <- run_sctype(filtered, known_tissue_type="Immune system",custom_marker_file="https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx",name="sctype_classification",plot=TRUE)
 ```
 
 ```{r}
