@@ -1,0 +1,91 @@
+---
+title: "scRepertoire"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+execute:
+  warning: false
+---
+
+## Installation
+
+To install the latest version of scRepertoire, please install it from the master branch of github repo.
+
+```{r}
+devtools::install_github("ncborcherding/scRepertoire")
+```
+
+## Library
+
+```{r}
+library(tidyverse)
+library(scRepertoire)
+library(data.table)
+```
+
+## Read in data
+
+This tutorial is to input Rhapsody V(D)J output, Dominant_Contigs_AIRR.tsv, into scRepertoire package.
+
+If SMK kit is used, please split the samples upfront.
+
+If both BCR and TCR are available, please split the BCR and TCR chains upfront.
+
+The Demo data is available [here](https://bd-rhapsody-public.s3.amazonaws.com/Rhapsody-Demo-Data/VDJ/RhapTCRBCRdemo.zip).
+
+```{r}
+# read in data
+airr <- fread("~/OneDrive - BD/11_demo_data/v2_0/RhapTCRBCRdemo-v2rc/RhapTCRBCRdemo_VDJ_Dominant_Contigs_AIRR.tsv") %>% 
+  rename(chain = locus,
+         barcode = cell_id,
+         reads = duplicate_count,
+         v_gene = v_call,
+         d_gene = d_call,
+         j_gene = j_call,
+         c_gene = c_call,
+         cdr3_nt = cdr3,
+         cdr3 = cdr3_aa)
+
+smk <- fread("~/OneDrive - BD/11_demo_data/v2_0/RhapTCRBCRdemo-v2rc/RhapTCRBCRdemo_Sample_Tag_Calls.csv")
+
+# split data by sample tag
+sample1 <- filter(airr, barcode%in% (filter(smk, Sample_Tag == "SampleTag05_hs") %>% .$Cell_Index), chain %in% c("TRB", "TRA", "TRG", "TRD"))
+sample2 <- filter(airr, barcode%in% (filter(smk, Sample_Tag == "SampleTag06_hs") %>% .$Cell_Index), chain %in% c("TRB", "TRA", "TRG", "TRD"))
+
+bd <- list(sample1, sample2)
+
+combined.TCR <- combineTCR(bd, 
+                           samples = c("sample1", "sample2"),
+                           removeNA = FALSE, 
+                           removeMulti = FALSE, 
+                           filterMulti = FALSE)
+```
+
+## Example plots
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE)
+```
+
+```{r}
+clonalDiversity(combined.TCR, 
+                cloneCall = "gene")
+```
+
+```{r}
+clonalCompare(combined.TCR, 
+                  top.clones = 10, 
+                  samples = c("sample1", "sample2"), 
+                  cloneCall="aa", 
+                  graph = "alluvial")
+```
+
+## sessionInfo
+
+```{r}
+sessionInfo(package = NULL)
+```
