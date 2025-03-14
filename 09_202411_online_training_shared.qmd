@@ -3,6 +3,7 @@ title: "9. Tips & Tricks - Analysis workflow of protein expression"
 execute:
   warning: false
   message: false
+  eval: false
 format:
   html:
     embed-resources: true

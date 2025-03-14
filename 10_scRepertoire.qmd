@@ -1,5 +1,5 @@
 ---
-title: "scRepertoire"
+title: "10. Import VDJ data into scRepertoire"
 execute:
   warning: false
   message: false
@@ -33,7 +33,7 @@ library(SeuratDisk)
 ```{r}
 # read in seurat object
 ## Note: When analysing a subset of cells, eg. QC to keep high quality cells, you need to create a seurat object only having that subset of cells.
-seuratObj <- readRDS("Seurat.rds")
+seuratObj <- readRDS("~/OneDrive - BD/11_demo_data/v2_2/VDJNext-Demo2034/VDJNext-Demo2034_Seurat.rds")
 
 # read in contig file
 contigs <- fread("VDJ_Dominant_Contigs_AIRR.tsv") %>% 
@@ -76,11 +76,16 @@ From here onward, you can refer to the tutorial to visualize VDJ data <https://w
 clonalQuant(combined.TCR)
 ```
 
-From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <https://www.borch.dev/uploads/screpertoire/articles/attaching_sc>
-
 ```{r}
 # update cell id names
+
+################### choose one to continue ######################
+## If If the experiments DON'T use SMK:
+colnames(seuratObj) <- paste(seuratObj$orig.ident, colnames(seuratObj), sep = "_")
+
+## If the experiments use SMK:
 colnames(seuratObj) <- paste(seuratObj$Sample_Name, colnames(seuratObj), sep = "_")
+########################### end #################################
 
 # convert to sce and add TCR information
 sce <- Seurat::as.SingleCellExperiment(seuratObj)
@@ -94,6 +99,8 @@ sce <- combineExpression(combined.TCR,
 ## Optional: convert back to seurat for visualization
 # seuratObj_convertBack <- as.Seurat(sce, counts = "counts", data = NULL) 
 ```
+
+From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <https://www.borch.dev/uploads/screpertoire/articles/attaching_sc>
 
 ## Reference
 

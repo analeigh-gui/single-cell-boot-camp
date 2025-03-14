@@ -1,5 +1,5 @@
 ---
-title: "11_targeted_single_assay"
+title: "11. Analyze Targeted Assay - Single Sample"
 execute:
   warning: false
   message: false
