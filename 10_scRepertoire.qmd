@@ -1,16 +1,19 @@
 ---
 title: "scRepertoire"
-format: 
-  html:
-    embed-resources: true
-editor: visual
 execute:
   warning: false
+  message: false
+  eval: false
+format:
+  html:
+    embed-resources: true
 ---
 
 ## Installation
 
-To install the latest version of scRepertoire, please install it from the master branch of github repo.
+This tutorial is to show how to import VDJ output from BD Rhapsody primary pipeline into scRepertorie.
+
+Please install the latest version of scRepertoire from the master branch of github repo. It has to be the latest version to have the functions running.
 
 ```{r}
 devtools::install_github("ncborcherding/scRepertoire")
@@ -22,24 +25,21 @@ devtools::install_github("ncborcherding/scRepertoire")
 library(tidyverse)
 library(scRepertoire)
 library(data.table)
+library(SeuratDisk) 
 ```
 
-## Read in data
-
-This tutorial is to input Rhapsody V(D)J output, Dominant_Contigs_AIRR.tsv, into scRepertoire package.
-
-If SMK kit is used, please split the samples upfront.
-
-If both BCR and TCR are available, please split the BCR and TCR chains upfront.
-
-The Demo data is available [here](https://bd-rhapsody-public.s3.amazonaws.com/Rhapsody-Demo-Data/VDJ/RhapTCRBCRdemo.zip).
+## 1. Read in data
 
 ```{r}
-# read in data
-airr <- fread("~/OneDrive - BD/11_demo_data/v2_0/RhapTCRBCRdemo-v2rc/RhapTCRBCRdemo_VDJ_Dominant_Contigs_AIRR.tsv") %>% 
+# read in seurat object
+## Note: When analysing a subset of cells, eg. QC to keep high quality cells, you need to create a seurat object only having that subset of cells.
+seuratObj <- readRDS("Seurat.rds")
+
+# read in contig file
+contigs <- fread("VDJ_Dominant_Contigs_AIRR.tsv") %>% 
   rename(chain = locus,
          barcode = cell_id,
-         reads = duplicate_count,
+         reads = consensus_count,
          v_gene = v_call,
          d_gene = d_call,
          j_gene = j_call,
@@ -47,45 +47,56 @@ airr <- fread("~/OneDrive - BD/11_demo_data/v2_0/RhapTCRBCRdemo-v2rc/RhapTCRBCRd
          cdr3_nt = cdr3,
          cdr3 = cdr3_aa)
 
-smk <- fread("~/OneDrive - BD/11_demo_data/v2_0/RhapTCRBCRdemo-v2rc/RhapTCRBCRdemo_Sample_Tag_Calls.csv")
+# create a contig list
+contig.list <- createHTOContigList(contigs,
+                                  seuratObj,
+                                  group.by = "orig.ident")
 
-# split data by sample tag
-sample1 <- filter(airr, barcode%in% (filter(smk, Sample_Tag == "SampleTag05_hs") %>% .$Cell_Index), chain %in% c("TRB", "TRA", "TRG", "TRD"))
-sample2 <- filter(airr, barcode%in% (filter(smk, Sample_Tag == "SampleTag06_hs") %>% .$Cell_Index), chain %in% c("TRB", "TRA", "TRG", "TRD"))
-
-bd <- list(sample1, sample2)
-
-combined.TCR <- combineTCR(bd, 
-                           samples = c("sample1", "sample2"),
-                           removeNA = FALSE, 
-                           removeMulti = FALSE, 
-                           filterMulti = FALSE)
+# insert sample names
+combined.TCR <- combineTCR(contig.list, samples = c("orig.ident"))
 ```
 
-## Example plots
+**Below code is only for experiments with SMK.**
 
 ```{r}
-clonalQuant(combined.TCR, 
-            cloneCall="strict", 
-            chain = "both", 
-            scale = TRUE)
+# create a contig list
+contig.list <- createHTOContigList(contigs,
+                                  seuratObj,
+                                  group.by = "Sample_Name")
+
+# insert sample names
+combined.TCR <- combineTCR(contig.list, samples = c(""))
 ```
+
+## 2. scRepertoire
+
+From here onward, you can refer to the tutorial to visualize VDJ data <https://www.borch.dev/uploads/screpertoire/articles/clonal_visualizations>
 
 ```{r}
-clonalDiversity(combined.TCR, 
-                cloneCall = "gene")
+clonalQuant(combined.TCR)
 ```
+
+From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <https://www.borch.dev/uploads/screpertoire/articles/attaching_sc>
 
 ```{r}
-clonalCompare(combined.TCR, 
-                  top.clones = 10, 
-                  samples = c("sample1", "sample2"), 
-                  cloneCall="aa", 
-                  graph = "alluvial")
+# update cell id names
+colnames(seuratObj) <- paste(seuratObj$Sample_Name, colnames(seuratObj), sep = "_")
+
+# convert to sce and add TCR information
+sce <- Seurat::as.SingleCellExperiment(seuratObj)
+
+sce <- combineExpression(combined.TCR, 
+                         sce,
+                         cloneCall = "gene",
+                         group.by = "sample",
+                         proportion = T)
+
+## Optional: convert back to seurat for visualization
+# seuratObj_convertBack <- as.Seurat(sce, counts = "counts", data = NULL) 
 ```
 
-## sessionInfo
+## Reference
 
-```{r}
-sessionInfo(package = NULL)
-```
+Github page: <https://github.com/BorchLab/scRepertoire>
+
+Vignette: <https://www.borch.dev/uploads/screpertoire/>

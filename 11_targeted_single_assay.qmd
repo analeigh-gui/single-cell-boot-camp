@@ -1,0 +1,151 @@
+---
+title: "11_targeted_single_assay"
+execute:
+  warning: false
+  message: false
+  eval: false
+format:
+  html:
+    embed-resources: true
+---
+
+## Demo data description
+
+This [**BD Rhapsody™ Targeted mRNA assay dataset**](https://bd-rhapsody-public.s3.amazonaws.com/Rhapsody-Demo-Data/16HIRP-targeted-EB-20kPBMC.zip) was generated from 20,000 resting PBMC using the pre-designed BD Rhapsody™ Immune Response Panel HS. Sequencing library was generated using the BD Rhapsody™ Targeted mRNA and AbSeq Amplification Kit.
+
+**Note:** This is a quick walk through on targeted assay analysis. For detail description on each step, please refer to previous chapters.
+
+## 1. Data import
+
+```{r}
+seuratObj <- readRDS("16HIRP_Seurat.rds")
+```
+
+## 2. Assessing quality metrics
+
+### 2.1 `nCount_RNA` UMI counts per cell
+
+The term `nCount_RNA` refers to the **UMI counts per cell**.
+
+We create two plots side by side: a ridge plot and a violin plot. These plots are organized by samples.
+
+```{r fig.width=10}
+p1 <- seuratObj@meta.data %>% 
+  ggplot(aes(x=nCount_RNA)) + 
+  geom_density(alpha = 0.2) + 
+  scale_x_log10() + 
+  theme_classic()
+
+p2 <- VlnPlot(seuratObj, features = "nCount_RNA") +
+  scale_y_log10()
+
+p1|p2
+```
+
+### 2.2 `nFeature_RNA` Gene counts per cell
+
+The term **nFeature_RNA** refers to the **gene counts per cell**. Notably, the majority of cells have gene counts **above 40**.
+
+```{r fig.width=10}
+p1 <- seuratObj@meta.data %>% 
+  ggplot(aes(x=nFeature_RNA)) + 
+  geom_density(alpha = 0.2) + 
+  scale_x_log10() + 
+  theme_classic()
+
+p2 <- VlnPlot(seuratObj, features = "nFeature_RNA") +
+  scale_y_log10()
+
+p1|p2
+```
+
+### 2.4 Combine metrics
+
+To determine the filtering threshold, we can combine the following metrics: **`nCount_RNA`**, **`nFeature_RNA`**.
+
+```{r}
+seuratObj@meta.data %>% 
+  ggplot(aes(x=nCount_RNA, y=nFeature_RNA)) + 
+  geom_point() + 
+  scale_colour_gradient(low = "gray90", high = "black") +
+  stat_smooth(method=lm) +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  geom_vline(xintercept = 100, colour = "red") +
+  geom_hline(yintercept = 35, colour = "red") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+The data is fitted with a linear regression line. We expect that as UMI counts increase, gene counts will also increase.
+
+### 2.5 Filter out low quality cells
+
+Let’s summarize the quality thresholds for filtering out low-quality cells based on the provided metrics:
+
+`nCount_RNA` Cells with UMI counts greater than 100 are considered acceptable.
+
+`nFeature_RNA` Cells with gene counts greater than 35 fall within the desired range.
+
+By applying these thresholds, we can effectively filter out cells that do not meet the quality criteria.
+
+```{r}
+filtered <- subset(x = seuratObj, 
+                       subset = (nCount_RNA >= 100) & 
+                         (nFeature_RNA >= 35))
+```
+
+### 2.6 Re-assess metrics
+
+After applying the filtering criteria, it’s essential to verify that the filtered data aligns with our expectations. To do so, we revisit the quality control (QC) metrics and create plots using the filtered dataset. These updated plots will help us assess the quality of the remaining cells.
+
+```{r}
+filtered@meta.data %>% 
+  ggplot(aes(x=nCount_RNA, y=nFeature_RNA)) + 
+  geom_point() + 
+  scale_colour_gradient(low = "gray90", high = "black") +
+  stat_smooth(method=lm) +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  geom_vline(xintercept = 100, colour = "red") +
+  geom_hline(yintercept = 35, colour = "red") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+## 3. Normalization
+
+After removing the low-quality cells during the quality control (QC) step, the next crucial step is data normalization. Normalization ensures that we can compare gene expression values across cells. A common function to normalize mRNA UMI counts is `LogNormalize`.
+
+After normalization, the data is scaled and centered by `ScaleData`.
+
+Targeted assay has limited number of genes. We can define all genes as highly variable features by `VariableFeatures`.
+
+```{r}
+filtered <- NormalizeData(filtered, 
+                          normalization.method = "LogNormalize")
+
+# Scale data
+filtered <- ScaleData(filtered, features = rownames(filtered))
+
+# Find variable features
+VariableFeatures(filtered) <- rownames(filtered)
+```
+
+## 4. PCA and UMAP
+
+```{r}
+filtered <- RunPCA(filtered, npcs = 50, verbose = FALSE) %>% 
+  RunUMAP(reduction = "pca", dims = 1:20)
+```
+
+```{r}
+# Plot UMAP                             
+DimPlot(filtered)   
+```
+
+## 5. Visualization
+
+```{r}
+DimPlot(filtered, group.by = "Cell_Type_Experimental")   
+```
