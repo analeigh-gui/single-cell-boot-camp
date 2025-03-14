@@ -9,35 +9,33 @@ format:
     embed-resources: true
 ---
 
-## Installation
+Installation
 
 This tutorial is to show how to import VDJ output from BD Rhapsody primary pipeline into scRepertorie.
 
 Please install the latest version of scRepertoire from the master branch of github repo. It has to be the latest version to have the functions running.
 
-```{r}
+{r}
 devtools::install_github("ncborcherding/scRepertoire")
-```
 
-## Library
+Library
 
-```{r}
+{r}
 library(tidyverse)
 library(scRepertoire)
 library(data.table)
 library(SeuratDisk) 
-```
 
-## 1. Read in data
+1. Read in data
 
-```{r}
+{r}
 # read in seurat object
 ## Note: When analysing a subset of cells, eg. QC to keep high quality cells, you need to create a seurat object only having that subset of cells.
-seuratObj <- readRDS("~/OneDrive - BD/11_demo_data/v2_2/VDJNext-Demo2034/VDJNext-Demo2034_Seurat.rds")
+seuratObj <- readRDS("VDJNext-Demo2024/VDJNext-Demo2034_Seurat.rds")
 
 # read in contig file
-contigs <- fread("VDJ_Dominant_Contigs_AIRR.tsv") %>% 
-  rename(chain = locus,
+contigs <- fread("VDJNext-Demo2024/VDJNext-Demo2034_VDJ_Dominant_Contigs_AIRR.tsv") %>% 
+  dplyr::rename(chain = locus,
          barcode = cell_id,
          reads = consensus_count,
          v_gene = v_call,
@@ -53,12 +51,11 @@ contig.list <- createHTOContigList(contigs,
                                   group.by = "orig.ident")
 
 # insert sample names
-combined.TCR <- combineTCR(contig.list, samples = c("orig.ident"))
-```
+combined.TCR <- combineTCR(contig.list, samples = as.character(unique(seuratObj$orig.ident)))
 
-**Below code is only for experiments with SMK.**
+Below code is only for experiments with SMK.
 
-```{r}
+{r}
 # create a contig list
 contig.list <- createHTOContigList(contigs,
                                   seuratObj,
@@ -66,44 +63,38 @@ contig.list <- createHTOContigList(contigs,
 
 # insert sample names
 combined.TCR <- combineTCR(contig.list, samples = c(""))
-```
 
-## 2. scRepertoire
+2. scRepertoire
 
-From here onward, you can refer to the tutorial to visualize VDJ data <https://www.borch.dev/uploads/screpertoire/articles/clonal_visualizations>
+From here onward, you can refer to the tutorial to visualize VDJ data https://www.borch.dev/uploads/screpertoire/articles/clonal_visualizations
 
-```{r}
+{r}
 clonalQuant(combined.TCR)
-```
 
-```{r}
+{r}
 # update cell id names
 
 ################### choose one to continue ######################
-## If If the experiments DON'T use SMK:
+## If the experiments DON'T use SMK:
 colnames(seuratObj) <- paste(seuratObj$orig.ident, colnames(seuratObj), sep = "_")
 
 ## If the experiments use SMK:
 colnames(seuratObj) <- paste(seuratObj$Sample_Name, colnames(seuratObj), sep = "_")
 ########################### end #################################
 
-# convert to sce and add TCR information
-sce <- Seurat::as.SingleCellExperiment(seuratObj)
+seuratObj <- combineExpression(combined.TCR, 
+                               seuratObj, 
+                               cloneCall="gene", 
+                               group.by = "sample", 
+                               proportion = FALSE, 
+                               cloneSize=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
-sce <- combineExpression(combined.TCR, 
-                         sce,
-                         cloneCall = "gene",
-                         group.by = "sample",
-                         proportion = T)
+Seurat::DimPlot(seuratObj, group.by = "cloneSize")
 
-## Optional: convert back to seurat for visualization
-# seuratObj_convertBack <- as.Seurat(sce, counts = "counts", data = NULL) 
-```
+From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. https://www.borch.dev/uploads/screpertoire/articles/attaching_sc
 
-From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <https://www.borch.dev/uploads/screpertoire/articles/attaching_sc>
+Reference
 
-## Reference
+Github page: https://github.com/BorchLab/scRepertoire
 
-Github page: <https://github.com/BorchLab/scRepertoire>
-
-Vignette: <https://www.borch.dev/uploads/screpertoire/>
+Vignette: https://www.borch.dev/uploads/screpertoire/
