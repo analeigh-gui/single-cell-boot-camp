@@ -4587,8 +4587,11 @@ vertical-align: -.125em;
   </div>
 </li>
         <li class="sidebar-item">
- <span class="menu-text">11_targeted_single_assay.qmc</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="./11_targeted_single_assay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Analyze Targeted Assay - Single Sample</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sessioninfo.html" class="sidebar-item-text sidebar-link">
@@ -4648,11 +4651,11 @@ vertical-align: -.125em;
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># read in seurat object</span></span>
 <span><span class="co">## Note: When analysing a subset of cells, eg. QC to keep high quality cells, you need to create a seurat object only having that subset of cells.</span></span>
-<span><span class="va">seuratObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">&quot;Seurat.rds&quot;</span><span class="op">)</span></span>
+<span><span class="va">seuratObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">&quot;VDJNext-Demo2024/VDJNext-Demo2034_Seurat.rds&quot;</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read in contig file</span></span>
-<span><span class="va">contigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">&quot;VDJ_Dominant_Contigs_AIRR.tsv&quot;</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>chain <span class="op">=</span> <span class="va">locus</span>,</span>
+<span><span class="va">contigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">&quot;VDJNext-Demo2024/VDJNext-Demo2034_VDJ_Dominant_Contigs_AIRR.tsv&quot;</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>chain <span class="op">=</span> <span class="va">locus</span>,</span>
 <span>         barcode <span class="op">=</span> <span class="va">cell_id</span>,</span>
 <span>         reads <span class="op">=</span> <span class="va">consensus_count</span>,</span>
 <span>         v_gene <span class="op">=</span> <span class="va">v_call</span>,</span>
@@ -4668,7 +4671,7 @@ vertical-align: -.125em;
 <span>                                  group.by <span class="op">=</span> <span class="st">&quot;orig.ident&quot;</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># insert sample names</span></span>
-<span><span class="va">combined.TCR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.borch.dev/uploads/scRepertoire/reference/combineTCR.html">combineTCR</a></span><span class="op">(</span><span class="va">contig.list</span>, samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;orig.ident&quot;</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">combined.TCR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.borch.dev/uploads/scRepertoire/reference/combineTCR.html">combineTCR</a></span><span class="op">(</span><span class="va">contig.list</span>, samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">$</span><span class="va">orig.ident</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Below code is only for experiments with SMK.</strong></p>
 <div class="cell">
@@ -4685,23 +4688,27 @@ vertical-align: -.125em;
 <div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://www.borch.dev/uploads/scRepertoire/reference/clonalQuant.html">clonalQuant</a></span><span class="op">(</span><span class="va">combined.TCR</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <a href="https://www.borch.dev/uploads/screpertoire/articles/attaching_sc" class="uri">https://www.borch.dev/uploads/screpertoire/articles/attaching_sc</a></p>
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># update cell id names</span></span>
+<span></span>
+<span><span class="co">################### choose one to continue ######################</span></span>
+<span><span class="co">## If the experiments DON&#39;T use SMK:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">$</span><span class="va">orig.ident</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">&quot;_&quot;</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## If the experiments use SMK:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">$</span><span class="va">Sample_Name</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">&quot;_&quot;</span><span class="op">)</span></span>
+<span><span class="co">########################### end #################################</span></span>
 <span></span>
-<span><span class="co"># convert to sce and add TCR information</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/as.SingleCellExperiment.html">as.SingleCellExperiment</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span></span>
+<span><span class="va">seuratObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.borch.dev/uploads/scRepertoire/reference/combineExpression.html">combineExpression</a></span><span class="op">(</span><span class="va">combined.TCR</span>, </span>
+<span>                               <span class="va">seuratObj</span>, </span>
+<span>                               cloneCall<span class="op">=</span><span class="st">&quot;gene&quot;</span>, </span>
+<span>                               group.by <span class="op">=</span> <span class="st">&quot;sample&quot;</span>, </span>
+<span>                               proportion <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                               cloneSize<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Single<span class="op">=</span><span class="fl">1</span>, Small<span class="op">=</span><span class="fl">5</span>, Medium<span class="op">=</span><span class="fl">20</span>, Large<span class="op">=</span><span class="fl">100</span>, Hyperexpanded<span class="op">=</span><span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.borch.dev/uploads/scRepertoire/reference/combineExpression.html">combineExpression</a></span><span class="op">(</span><span class="va">combined.TCR</span>, </span>
-<span>                         <span class="va">sce</span>,</span>
-<span>                         cloneCall <span class="op">=</span> <span class="st">&quot;gene&quot;</span>,</span>
-<span>                         group.by <span class="op">=</span> <span class="st">&quot;sample&quot;</span>,</span>
-<span>                         proportion <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Optional: convert back to seurat for visualization</span></span>
-<span><span class="co"># seuratObj_convertBack &lt;- as.Seurat(sce, counts = &quot;counts&quot;, data = NULL) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html">DimPlot</a></span><span class="op">(</span><span class="va">seuratObj</span>, group.by <span class="op">=</span> <span class="st">&quot;cloneSize&quot;</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>From here onward, you can refer to this tutorial to visualize data on dimentionality graphs. <a href="https://www.borch.dev/uploads/screpertoire/articles/attaching_sc" class="uri">https://www.borch.dev/uploads/screpertoire/articles/attaching_sc</a></p>
 </section><section id="reference" class="level2"><h2 class="anchored" data-anchor-id="reference">Reference</h2>
 <p>Github page: <a href="https://github.com/BorchLab/scRepertoire" class="uri">https://github.com/BorchLab/scRepertoire</a></p>
 <p>Vignette: <a href="https://www.borch.dev/uploads/screpertoire/" class="uri">https://www.borch.dev/uploads/screpertoire/</a></p>
